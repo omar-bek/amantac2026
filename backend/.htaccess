@@ -1,0 +1,24 @@
+# Plesk .htaccess for FastAPI Backend
+# This file routes API requests to the Python application
+# IMPORTANT: Update the paths below to match your Plesk domain structure
+
+# Enable Passenger
+PassengerEnabled On
+PassengerAppRoot /var/www/vhosts/yourdomain.com/httpdocs/backend
+PassengerAppType wsgi
+PassengerStartupFile passenger_wsgi.py
+PassengerPython /usr/bin/python3
+
+# Optional: Set Passenger environment variables
+# PassengerEnvVar DATABASE_URL "sqlite:///./amantac.db"
+# PassengerEnvVar SECRET_KEY "your-secret-key-change-in-production"
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Note: Environment variables should be set in the .env file in the backend directory
+# The PassengerAppRoot path above must match your actual domain path in Plesk

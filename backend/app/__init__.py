@@ -1,0 +1,6 @@
+# Amantac School Management System
+
+
+
+
+
