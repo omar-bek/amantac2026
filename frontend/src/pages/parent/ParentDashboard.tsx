@@ -23,11 +23,29 @@ export default function ParentDashboard() {
   const { user } = useAuthStore()
   const navigate = useNavigate()
 
-  const { data: students, isLoading } = useQuery(
+  // First, try to load children linked to the logged-in parent
+  const {
+    data: parentStudents,
+    isLoading: isLoadingParentStudents,
+  } = useQuery(
     'my-students',
     () => studentsAPI.getByParent(user?.id || 0),
     { enabled: !!user?.id }
   )
+
+  // Fallback: if no children are linked to this parent, load all students
+  const {
+    data: allStudents,
+    isLoading: isLoadingAllStudents,
+  } = useQuery(
+    'all-students',
+    () => studentsAPI.getAll(),
+    {
+      enabled: !!user?.id && Array.isArray(parentStudents) && parentStudents.length === 0,
+    }
+  )
+
+  const isLoading = isLoadingParentStudents || isLoadingAllStudents
 
   // Get time-aware greeting
   const getGreeting = () => {
@@ -47,7 +65,14 @@ export default function ParentDashboard() {
   }
 
   // Ensure students is always treated as an array
-  const studentsList = Array.isArray(students) ? students : []
+  const studentsSource =
+    Array.isArray(parentStudents) && parentStudents.length > 0
+      ? parentStudents
+      : Array.isArray(allStudents)
+        ? allStudents
+        : []
+
+  const studentsList = Array.isArray(studentsSource) ? studentsSource : []
 
   // Mock-derived status data based on students list
   const childStatuses: ChildStatus[] =
@@ -65,8 +90,8 @@ export default function ParentDashboard() {
         index === 0
           ? 'Last Seen At Gate 3, 1m Ago'
           : index === 1
-          ? 'Seems To Be Playing, Not In Class'
-          : undefined,
+            ? 'Seems To Be Playing, Not In Class'
+            : undefined,
     })) || []
 
   // Determine overall status
@@ -74,8 +99,8 @@ export default function ParentDashboard() {
     childStatuses.some((c) => c.status === 'action-required')
       ? 'action-required'
       : childStatuses.some((c) => c.status === 'informational')
-      ? 'informational'
-      : 'safe'
+        ? 'informational'
+        : 'safe'
 
   const handleContactSchool = () => {
     // Implement contact school functionality
