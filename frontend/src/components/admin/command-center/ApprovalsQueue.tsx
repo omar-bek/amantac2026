@@ -365,14 +365,14 @@ export default function ApprovalsQueue() {
                   </div>
 
                   {/* Audit Trail */}
-                  {approval.auditTrail && approval.auditTrail.length > 0 && (
+                  {Array.isArray(approval.auditTrail) && approval.auditTrail.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <div className="flex items-center gap-2 mb-2">
                         <FileText className="w-4 h-4 text-gray-500" />
                         <span className="text-xs font-medium text-gray-700">سجل التدقيق</span>
                       </div>
                       <div className="space-y-1">
-                        {approval.auditTrail.map((entry: any, idx: number) => (
+                      {(approval.auditTrail || []).map((entry: any, idx: number) => (
                           <div
                             key={idx}
                             className="text-xs text-gray-600 flex items-center gap-2"

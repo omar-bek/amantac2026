@@ -67,12 +67,12 @@ export default function StudentDashboard() {
     return 'مساء الخير'
   }
 
-  const upcomingAssignments = homework?.filter((hw: any) => {
+  const upcomingAssignments = Array.isArray(homework) ? homework.filter((hw: any) => {
     const dueDate = new Date(hw.due_date)
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     return dueDate >= today
-  }) || []
+  }) : []
 
   const completedToday = progress?.completed_tasks || 0
   const inProgress = progress?.in_progress || 0
@@ -252,7 +252,7 @@ export default function StudentDashboard() {
                 {upcomingAssignments.slice(0, 3).map((hw: any) => {
                   const dueDate = new Date(hw.due_date)
                   const daysUntil = Math.ceil((dueDate.getTime() - currentTime.getTime()) / (1000 * 60 * 60 * 24))
-                  
+
                   return (
                     <button
                       key={hw.id}

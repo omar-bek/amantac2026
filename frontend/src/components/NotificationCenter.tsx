@@ -56,7 +56,7 @@ export default function NotificationCenter() {
     }
   )
 
-  const notificationsList = notifications || []
+  const notificationsList = Array.isArray(notifications) ? notifications : []
   const unreadCount = notificationsList.filter((n: Notification) => !n.is_read).length
 
   const getPriorityColor = (priority: string) => {
@@ -121,9 +121,8 @@ export default function NotificationCenter() {
                   {notificationsList.map((notification: Notification) => (
                     <div
                       key={notification.id}
-                      className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer ${
-                        !notification.is_read ? 'bg-blue-50' : ''
-                      }`}
+                      className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer ${!notification.is_read ? 'bg-blue-50' : ''
+                        }`}
                       onClick={() => {
                         if (!notification.is_read) {
                           markReadMutation.mutate(notification.id)

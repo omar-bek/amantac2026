@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { 
-  ArrowRight, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Users, 
+import {
+  ArrowRight,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Users,
   Check,
   AlertCircle,
   Loader
@@ -145,7 +145,7 @@ export default function TeacherAttendance() {
   const filteredStudents = useMemo(() => {
     if (!students) return []
     if (quickFilters.size === 0) return students
-    
+
     return students.filter((student: any) => {
       const status = getAttendanceStatus(student.id)
       if (quickFilters.has('unmarked') && !status) return true
@@ -156,9 +156,9 @@ export default function TeacherAttendance() {
     })
   }, [students, quickFilters, attendance])
 
-  const presentCount = attendance?.filter((a: any) => a.attendance_type === 'PRESENT').length || 0
-  const absentCount = attendance?.filter((a: any) => a.attendance_type === 'ABSENT').length || 0
-  const lateCount = attendance?.filter((a: any) => a.attendance_type === 'LATE').length || 0
+  const presentCount = Array.isArray(attendance) ? attendance.filter((a: any) => a.attendance_type === 'PRESENT').length : 0
+  const absentCount = Array.isArray(attendance) ? attendance.filter((a: any) => a.attendance_type === 'ABSENT').length : 0
+  const lateCount = Array.isArray(attendance) ? attendance.filter((a: any) => a.attendance_type === 'LATE').length : 0
   const unmarkedCount = (students?.length || 0) - (presentCount + absentCount + lateCount)
   const totalCount = students?.length || 0
 
@@ -171,8 +171,8 @@ export default function TeacherAttendance() {
         <div className="px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button 
-                onClick={() => navigate('/teacher')} 
+              <button
+                onClick={() => navigate('/teacher')}
                 className="p-2 hover:bg-sand-100 rounded-card transition-colors"
                 aria-label="العودة"
               >
@@ -247,21 +247,19 @@ export default function TeacherAttendance() {
             <div className="flex gap-2 flex-wrap">
               <button
                 onClick={() => toggleQuickFilter('unmarked')}
-                className={`px-3 py-1.5 rounded-card text-xs font-medium transition-all ${
-                  quickFilters.has('unmarked')
+                className={`px-3 py-1.5 rounded-card text-xs font-medium transition-all ${quickFilters.has('unmarked')
                     ? 'bg-amber-100 text-amber-700 border border-amber-300'
                     : 'bg-sand-50 text-gray-600 border border-sand-300 hover:bg-sand-100'
-                }`}
+                  }`}
               >
                 غير مسجل ({unmarkedCount})
               </button>
               <button
                 onClick={() => toggleQuickFilter('present')}
-                className={`px-3 py-1.5 rounded-card text-xs font-medium transition-all ${
-                  quickFilters.has('present')
+                className={`px-3 py-1.5 rounded-card text-xs font-medium transition-all ${quickFilters.has('present')
                     ? 'bg-emerald-100 text-emerald-700 border border-emerald-300'
                     : 'bg-sand-50 text-gray-600 border border-sand-300 hover:bg-sand-100'
-                }`}
+                  }`}
               >
                 حاضر ({presentCount})
               </button>
@@ -282,11 +280,10 @@ export default function TeacherAttendance() {
                   setSelectedStudents(new Set(unmarkedIds))
                 }
               }}
-              className={`px-4 py-2 rounded-card text-sm font-medium transition-all flex items-center gap-2 ${
-                bulkMode === 'present'
+              className={`px-4 py-2 rounded-card text-sm font-medium transition-all flex items-center gap-2 ${bulkMode === 'present'
                   ? 'bg-emerald-100 text-emerald-700 border-2 border-emerald-400'
                   : 'bg-sand-50 text-gray-700 border border-sand-300 hover:bg-sand-100'
-              }`}
+                }`}
             >
               <CheckCircle size={16} />
               تسجيل الحضور للكل
@@ -301,11 +298,10 @@ export default function TeacherAttendance() {
                   setSelectedStudents(new Set(unmarkedIds))
                 }
               }}
-              className={`px-4 py-2 rounded-card text-sm font-medium transition-all flex items-center gap-2 ${
-                bulkMode === 'absent'
+              className={`px-4 py-2 rounded-card text-sm font-medium transition-all flex items-center gap-2 ${bulkMode === 'absent'
                   ? 'bg-red-100 text-red-700 border-2 border-red-400'
                   : 'bg-sand-50 text-gray-700 border border-sand-300 hover:bg-sand-100'
-              }`}
+                }`}
             >
               <XCircle size={16} />
               تسجيل الغياب للكل
@@ -354,29 +350,27 @@ export default function TeacherAttendance() {
                 return (
                   <div
                     key={student.id}
-                    className={`relative p-4 rounded-card border-2 transition-all ${
-                      status === 'PRESENT'
+                    className={`relative p-4 rounded-card border-2 transition-all ${status === 'PRESENT'
                         ? 'bg-emerald-50 border-emerald-200'
                         : status === 'ABSENT'
-                        ? 'bg-red-50 border-red-200'
-                        : status === 'LATE'
-                        ? 'bg-amber-50 border-amber-200'
-                        : bulkMode && isUnmarked
-                        ? isSelected
-                          ? 'bg-teal-50 border-teal-400 ring-2 ring-teal-300'
-                          : 'bg-white border-sand-200 hover:border-teal-300'
-                        : 'bg-white border-sand-200 hover:border-teal-300'
-                    }`}
+                          ? 'bg-red-50 border-red-200'
+                          : status === 'LATE'
+                            ? 'bg-amber-50 border-amber-200'
+                            : bulkMode && isUnmarked
+                              ? isSelected
+                                ? 'bg-teal-50 border-teal-400 ring-2 ring-teal-300'
+                                : 'bg-white border-sand-200 hover:border-teal-300'
+                              : 'bg-white border-sand-200 hover:border-teal-300'
+                      }`}
                   >
                     {/* Selection checkbox in bulk mode */}
                     {bulkMode && isUnmarked && (
                       <button
                         onClick={() => toggleStudentSelection(student.id)}
-                        className={`absolute top-2 left-2 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                          isSelected
+                        className={`absolute top-2 left-2 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${isSelected
                             ? 'bg-teal-600 border-teal-600'
                             : 'bg-white border-gray-300'
-                        }`}
+                          }`}
                       >
                         {isSelected && <Check size={14} className="text-white" />}
                       </button>

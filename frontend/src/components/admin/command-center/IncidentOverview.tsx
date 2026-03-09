@@ -189,13 +189,12 @@ export default function IncidentOverview() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <AlertTriangle
-                        className={`w-5 h-5 ${
-                          incident.severity === 'critical'
+                        className={`w-5 h-5 ${incident.severity === 'critical'
                             ? 'text-red-600'
                             : incident.severity === 'high'
-                            ? 'text-amber-600'
-                            : 'text-gray-600'
-                        }`}
+                              ? 'text-amber-600'
+                              : 'text-gray-600'
+                          }`}
                       />
                       <h3 className="text-lg font-bold text-gray-900">{incident.title}</h3>
                       <span className="text-sm text-gray-500">({incident.titleEn})</span>
@@ -247,14 +246,14 @@ export default function IncidentOverview() {
                   </div>
 
                   {/* Audit Trail */}
-                  {incident.auditTrail && incident.auditTrail.length > 0 && (
+                  {Array.isArray(incident.auditTrail) && incident.auditTrail.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <div className="flex items-center gap-2 mb-2">
                         <FileText className="w-4 h-4 text-gray-500" />
                         <span className="text-xs font-medium text-gray-700">سجل التدقيق</span>
                       </div>
                       <div className="space-y-1">
-                        {incident.auditTrail.map((entry: any, idx: number) => (
+                        {(incident.auditTrail || []).map((entry: any, idx: number) => (
                           <div
                             key={idx}
                             className="text-xs text-gray-600 flex items-center gap-2"

@@ -64,31 +64,31 @@ export default function TeacherEvaluations() {
 
   // Calculate statistics
   const stats = {
-    total: evaluations?.length || 0,
-    today: evaluations?.filter((e: StudentEvaluation) => {
+    total: Array.isArray(evaluations) ? evaluations.length : 0,
+    today: Array.isArray(evaluations) ? evaluations.filter((e: StudentEvaluation) => {
       const evalDate = new Date(e.evaluation_date || e.created_at)
       const today = new Date()
       return evalDate.toDateString() === today.toDateString()
-    }).length || 0,
-    excellent: evaluations?.filter((e: StudentEvaluation) => {
+    }).length : 0,
+    excellent: Array.isArray(evaluations) ? evaluations.filter((e: StudentEvaluation) => {
       const level = e.commitment_level || e.commitment || e.interaction_level || e.interaction
       return level === 'excellent'
-    }).length || 0,
-    needsSupport: evaluations?.filter((e: StudentEvaluation) => {
+    }).length : 0,
+    needsSupport: Array.isArray(evaluations) ? evaluations.filter((e: StudentEvaluation) => {
       const level = e.commitment_level || e.commitment || e.interaction_level || e.interaction
       return level === 'needs_support'
-    }).length || 0,
+    }).length : 0,
   }
 
   // Filter evaluations
-  const filteredEvaluations = evaluations?.filter((evaluation: StudentEvaluation) => {
-    const matchesSearch = 
+  const filteredEvaluations = Array.isArray(evaluations) ? evaluations.filter((evaluation: StudentEvaluation) => {
+    const matchesSearch =
       (evaluation.student_name || `طالب #${evaluation.student_id}`)
         .toLowerCase()
         .includes(searchTerm.toLowerCase())
     const matchesClass = !selectedClass || true // Can add class filter if needed
     return matchesSearch && matchesClass
-  })
+  }) : []
 
   const getStatusColor = (status?: string) => {
     switch (status) {
@@ -220,22 +220,20 @@ export default function TeacherEvaluations() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setEvaluationType('daily')}
-                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${
-                  evaluationType === 'daily'
+                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${evaluationType === 'daily'
                     ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg transform scale-105'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 <Calendar size={18} />
                 التقييم اليومي
               </button>
               <button
                 onClick={() => setEvaluationType('monthly')}
-                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${
-                  evaluationType === 'monthly'
+                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${evaluationType === 'monthly'
                     ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg transform scale-105'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 <TrendingUp size={18} />
                 التقييم الشهري
@@ -269,7 +267,7 @@ export default function TeacherEvaluations() {
               const interaction = evaluation.interaction_level || evaluation.interaction
               const behavior = evaluation.behavior_level || evaluation.behavior
               const participation = evaluation.participation_level || evaluation.participation
-              
+
               return (
                 <div
                   key={evaluation.id}
@@ -296,11 +294,10 @@ export default function TeacherEvaluations() {
                           </p>
                         </div>
                         <div className="mt-2">
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 ${
-                            evaluationType === 'daily' 
-                              ? 'bg-blue-100 text-blue-700 border-blue-300' 
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 ${evaluationType === 'daily'
+                              ? 'bg-blue-100 text-blue-700 border-blue-300'
                               : 'bg-purple-100 text-purple-700 border-purple-300'
-                          }`}>
+                            }`}>
                             {evaluationType === 'daily' ? 'يومي' : 'شهري'}
                           </span>
                         </div>

@@ -10,6 +10,9 @@ from contextlib import asynccontextmanager
 import uvicorn
 import os
 from dotenv import load_dotenv
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
 
 load_dotenv()
 
@@ -56,6 +59,18 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+import os
+
+frontend_dist = "../frontend/dist"
+
+app.mount("/assets", StaticFiles(directory=os.path.join(frontend_dist, "assets")), name="assets")
+
+@app.get("/{full_path:path}")
+async def serve_spa(full_path: str):
+    index_path = os.path.join(frontend_dist, "index.html")
+    return FileResponse(index_path)
 
 # CORS Middleware - Configure from environment variables
 allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
@@ -109,13 +124,13 @@ app.include_router(admin_classes.router, prefix="/api", tags=["Admin Classes"])
 # Driver routes
 app.include_router(driver.router, prefix="/api", tags=["Driver"])
 
-@app.get("/")
-async def root():
-    return {
-        "message": "Welcome to Amantac School Management System",
-        "version": "1.0.0",
-        "status": "running"
-    }
+# @app.get("/")
+# async def root():
+ #   return {
+ #       "message": "Welcome to Amantac School Management System",
+ #       "version": "1.0.0",
+ #       "status": "running"
+  #  }
 
 @app.get("/health")
 async def health_check():

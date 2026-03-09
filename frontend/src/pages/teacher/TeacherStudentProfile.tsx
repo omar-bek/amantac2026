@@ -54,7 +54,7 @@ export default function TeacherStudentProfile() {
     { enabled: !!id }
   )
 
-  const attendanceRate = attendance?.length 
+  const attendanceRate = Array.isArray(attendance) && attendance.length > 0
     ? (attendance.filter((a: any) => a.status === 'PRESENT').length / attendance.length * 100).toFixed(0)
     : 0
 

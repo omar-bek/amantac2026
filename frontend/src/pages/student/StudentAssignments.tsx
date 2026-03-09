@@ -117,15 +117,15 @@ export default function StudentAssignments() {
     }
   }
 
-  const filteredAssignments = assignments?.filter((assignment: Assignment) => {
+  const filteredAssignments = Array.isArray(assignments) ? assignments.filter((assignment: Assignment) => {
     if (filterStatus !== 'all' && assignment.status !== filterStatus) return false
     if (searchQuery && !assignment.assignment_name.toLowerCase().includes(searchQuery.toLowerCase())) return false
     return true
-  }) || []
+  }) : []
 
-  const pendingCount = assignments?.filter((a: Assignment) => a.status === 'pending').length || 0
-  const inProgressCount = assignments?.filter((a: Assignment) => a.status === 'in_progress').length || 0
-  const completedCount = assignments?.filter((a: Assignment) => a.status === 'completed').length || 0
+  const pendingCount = Array.isArray(assignments) ? assignments.filter((a: Assignment) => a.status === 'pending').length : 0
+  const inProgressCount = Array.isArray(assignments) ? assignments.filter((a: Assignment) => a.status === 'in_progress').length : 0
+  const completedCount = Array.isArray(assignments) ? assignments.filter((a: Assignment) => a.status === 'completed').length : 0
 
   // Focus mode: Show only one assignment if ID is provided
   if (id && assignmentDetail) {
@@ -289,13 +289,12 @@ export default function StudentAssignments() {
                 <button
                   key={assignment.id}
                   onClick={() => navigate(`/student/assignments/${assignment.id}`)}
-                  className={`w-full text-right p-5 rounded-card-lg border-2 transition-all hover:shadow-elevated ${
-                    isOverdue
+                  className={`w-full text-right p-5 rounded-card-lg border-2 transition-all hover:shadow-elevated ${isOverdue
                       ? 'bg-red-50 border-red-200'
                       : isUrgent
-                      ? 'bg-amber-50 border-amber-200'
-                      : 'bg-white border-sand-200 hover:border-teal-300'
-                  }`}
+                        ? 'bg-amber-50 border-amber-200'
+                        : 'bg-white border-sand-200 hover:border-teal-300'
+                    }`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
@@ -328,9 +327,8 @@ export default function StudentAssignments() {
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(assignment.status)}`}>
                       {assignment.status === 'completed' ? 'مكتمل' : assignment.status === 'in_progress' ? 'قيد التنفيذ' : 'معلق'}
                     </span>
-                    <span className={`text-xs font-medium ${
-                      isOverdue ? 'text-red-600' : isUrgent ? 'text-amber-600' : 'text-gray-600'
-                    }`}>
+                    <span className={`text-xs font-medium ${isOverdue ? 'text-red-600' : isUrgent ? 'text-amber-600' : 'text-gray-600'
+                      }`}>
                       {isOverdue ? `متأخر ${Math.abs(daysUntil)} يوم` : daysUntil === 0 ? 'اليوم' : daysUntil === 1 ? 'غداً' : `${daysUntil} أيام`}
                     </span>
                   </div>

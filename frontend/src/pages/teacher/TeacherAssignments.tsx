@@ -17,9 +17,9 @@ export default function TeacherAssignments() {
       return await assignmentsAPI.getAll()
     }
   )
-  
-  const assignments = assignmentsResponse?.data || []
-  
+
+  const assignments = Array.isArray(assignmentsResponse?.data) ? assignmentsResponse.data : []
+
   const { data: submissionsResponse } = useQuery(
     ['assignment-submissions', selectedAssignment?.id],
     async () => {
@@ -28,8 +28,8 @@ export default function TeacherAssignments() {
     },
     { enabled: !!selectedAssignment }
   )
-  
-  const submissions = submissionsResponse?.data || []
+
+  const submissions = Array.isArray(submissionsResponse?.data) ? submissionsResponse.data : []
 
   const deleteMutation = useMutation(assignmentsAPI.delete, {
     onSuccess: () => {
@@ -41,10 +41,10 @@ export default function TeacherAssignments() {
     },
   })
 
-  const filteredAssignments = assignments.filter((assignment: Assignment) =>
+  const filteredAssignments = Array.isArray(assignments) ? assignments.filter((assignment: Assignment) =>
     assignment.assignment_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     assignment.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  ) : []
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">

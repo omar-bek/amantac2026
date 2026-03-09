@@ -39,7 +39,7 @@ export default function Attendance() {
     async () => {
       try {
         const response = await apiClient.get('/staff/teachers/') // Using same endpoint for now
-        return response.data?.filter((s: any) => s.role === 'staff') || []
+        return Array.isArray(response.data) ? response.data.filter((s: any) => s.role === 'staff') : []
       } catch (error) {
         return []
       }
@@ -52,7 +52,7 @@ export default function Attendance() {
     ['attendance', selectedType, selectedPerson],
     async () => {
       if (!selectedPerson) return []
-      
+
       if (selectedType === 'students') {
         try {
           const response = await apiClient.get(`/attendance/student/${selectedPerson}`)
@@ -70,30 +70,30 @@ export default function Attendance() {
   )
 
   // Get list based on selected type
-  const peopleList = selectedType === 'students' 
-    ? students 
-    : selectedType === 'teachers' 
-    ? teachers 
-    : staff
+  const peopleList = selectedType === 'students'
+    ? students
+    : selectedType === 'teachers'
+      ? teachers
+      : staff
 
   // Filter people list
-  const filteredPeople = peopleList?.filter((person: any) =>
+  const filteredPeople = Array.isArray(peopleList) ? peopleList.filter((person: any) =>
     person.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     person.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (person.student_id && person.student_id.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
+  ) : []
 
   // Filter attendance by selected date
-  const filteredAttendance = attendance?.filter((a: any) => {
+  const filteredAttendance = Array.isArray(attendance) ? attendance.filter((a: any) => {
     if (!a.date) return false
     const recordDate = new Date(a.date).toISOString().split('T')[0]
     return recordDate === selectedDate
-  }) || []
+  }) : []
 
   // Calculate stats for all attendance (not just today)
-  const presentCount = attendance?.filter((a: any) => a.status === 'present' || a.status === 'PRESENT').length || 0
-  const absentCount = attendance?.filter((a: any) => a.status === 'absent' || a.status === 'ABSENT').length || 0
-  const lateCount = attendance?.filter((a: any) => a.status === 'late' || a.status === 'LATE').length || 0
+  const presentCount = Array.isArray(attendance) ? attendance.filter((a: any) => a.status === 'present' || a.status === 'PRESENT').length : 0
+  const absentCount = Array.isArray(attendance) ? attendance.filter((a: any) => a.status === 'absent' || a.status === 'ABSENT').length : 0
+  const lateCount = Array.isArray(attendance) ? attendance.filter((a: any) => a.status === 'late' || a.status === 'LATE').length : 0
 
   const getTypeLabel = () => {
     switch (selectedType) {
@@ -143,11 +143,10 @@ export default function Attendance() {
                 setSelectedType('students')
                 setSelectedPerson(null)
               }}
-              className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all ${
-                selectedType === 'students'
+              className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all ${selectedType === 'students'
                   ? 'bg-primary-600 text-white shadow-lg'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               <div className="flex items-center justify-center gap-2">
                 <Users size={20} />
@@ -159,11 +158,10 @@ export default function Attendance() {
                 setSelectedType('teachers')
                 setSelectedPerson(null)
               }}
-              className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all ${
-                selectedType === 'teachers'
+              className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all ${selectedType === 'teachers'
                   ? 'bg-primary-600 text-white shadow-lg'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               <div className="flex items-center justify-center gap-2">
                 <GraduationCap size={20} />
@@ -175,11 +173,10 @@ export default function Attendance() {
                 setSelectedType('staff')
                 setSelectedPerson(null)
               }}
-              className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all ${
-                selectedType === 'staff'
+              className={`flex-1 px-4 py-3 rounded-xl font-bold transition-all ${selectedType === 'staff'
                   ? 'bg-primary-600 text-white shadow-lg'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               <div className="flex items-center justify-center gap-2">
                 <User size={20} />
@@ -269,18 +266,16 @@ export default function Attendance() {
                 <button
                   key={person.id}
                   onClick={() => setSelectedPerson(person.id)}
-                  className={`w-full text-right p-4 rounded-xl transition-all ${
-                    selectedPerson === person.id
+                  className={`w-full text-right p-4 rounded-xl transition-all ${selectedPerson === person.id
                       ? 'bg-primary-100 border-2 border-primary-500'
                       : 'bg-gray-50 border-2 border-gray-200 hover:bg-gray-100'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      selectedPerson === person.id
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${selectedPerson === person.id
                         ? 'bg-primary-600'
                         : 'bg-gray-300'
-                    }`}>
+                      }`}>
                       <TypeIcon className="text-white" size={24} />
                     </div>
                     <div className="flex-1 text-right">
@@ -308,19 +303,18 @@ export default function Attendance() {
                 ) : filteredAttendance && filteredAttendance.length > 0 ? (
                   filteredAttendance.map((record: any) => {
                     const status = record.status?.toLowerCase() || record.status
-                    
+
                     return (
                       <div
                         key={record.id}
-                        className={`flex items-center justify-between p-4 rounded-xl border-2 ${
-                          status === 'present' || status === 'PRESENT'
+                        className={`flex items-center justify-between p-4 rounded-xl border-2 ${status === 'present' || status === 'PRESENT'
                             ? 'bg-green-50 border-green-200'
                             : status === 'absent' || status === 'ABSENT'
-                            ? 'bg-red-50 border-red-200'
-                            : status === 'late' || status === 'LATE'
-                            ? 'bg-yellow-50 border-yellow-200'
-                            : 'bg-blue-50 border-blue-200'
-                        }`}
+                              ? 'bg-red-50 border-red-200'
+                              : status === 'late' || status === 'LATE'
+                                ? 'bg-yellow-50 border-yellow-200'
+                                : 'bg-blue-50 border-blue-200'
+                          }`}
                       >
                         <div className="flex items-center gap-4">
                           {status === 'present' || status === 'PRESENT' ? (
@@ -341,22 +335,21 @@ export default function Attendance() {
                                 day: 'numeric'
                               }) : 'تاريخ غير محدد'}
                             </p>
-                            <p className={`text-sm font-bold ${
-                              status === 'present' || status === 'PRESENT'
+                            <p className={`text-sm font-bold ${status === 'present' || status === 'PRESENT'
                                 ? 'text-green-700'
                                 : status === 'absent' || status === 'ABSENT'
-                                ? 'text-red-700'
-                                : status === 'late' || status === 'LATE'
-                                ? 'text-yellow-700'
-                                : 'text-blue-700'
-                            }`}>
+                                  ? 'text-red-700'
+                                  : status === 'late' || status === 'LATE'
+                                    ? 'text-yellow-700'
+                                    : 'text-blue-700'
+                              }`}>
                               {status === 'present' || status === 'PRESENT'
                                 ? '✅ حاضر'
                                 : status === 'absent' || status === 'ABSENT'
-                                ? '❌ غائب'
-                                : status === 'late' || status === 'LATE'
-                                ? '⏰ متأخر'
-                                : '📝 معذور'}
+                                  ? '❌ غائب'
+                                  : status === 'late' || status === 'LATE'
+                                    ? '⏰ متأخر'
+                                    : '📝 معذور'}
                             </p>
                           </div>
                         </div>
