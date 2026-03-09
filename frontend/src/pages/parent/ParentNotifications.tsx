@@ -64,7 +64,9 @@ export default function ParentNotifications() {
     }
   }
 
-  const unreadCount = notifications?.filter((n: Notification) => n.status !== 'read').length || 0
+  const notificationsList = Array.isArray(notifications) ? notifications : []
+
+  const unreadCount = notificationsList.filter((n: Notification) => n.status !== 'read').length || 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 pb-20">
@@ -94,9 +96,9 @@ export default function ParentNotifications() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
             <p className="text-gray-600 mt-4">جاري التحميل...</p>
           </div>
-        ) : notifications?.length > 0 ? (
+        ) : notificationsList.length > 0 ? (
           <div className="space-y-3">
-            {notifications.map((notification: Notification) => (
+          {notificationsList.map((notification: Notification) => (
               <div
                 key={notification.id}
                 className={`bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${

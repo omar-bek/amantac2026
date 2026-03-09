@@ -46,24 +46,28 @@ export default function ParentDashboard() {
     return `منذ ${minutes} دقيقة`
   }
 
-  // Mock data - replace with real API calls
-  const childStatuses: ChildStatus[] = students?.map((student, index) => ({
-    id: student.id,
-    name: student.full_name,
-    status: index === 0 ? 'action-required' : index === 1 ? 'informational' : 'safe',
-    battery: index === 0 ? 14 : index === 1 ? 25 : 85,
-    location: index === 0 ? 'Unknown' : index === 1 ? 'Schoolyard' : 'Classroom 3A',
-    locationStatus: index === 0 ? 'unknown' : index === 1 ? 'warning' : 'ok',
-    healthStatus: index === 0 ? 'warning' : index === 1 ? 'ok' : 'ok',
-    activityStatus: index === 0 ? 'unknown' : index === 1 ? 'warning' : 'ok',
-    lastSeen: formatLastUpdate(index === 0 ? 1 : index === 1 ? 5 : 0),
-    alert:
-      index === 0
-        ? 'Last Seen At Gate 3, 1m Ago'
-        : index === 1
-        ? 'Seems To Be Playing, Not In Class'
-        : undefined,
-  })) || []
+  // Ensure students is always treated as an array
+  const studentsList = Array.isArray(students) ? students : []
+
+  // Mock-derived status data based on students list
+  const childStatuses: ChildStatus[] =
+    studentsList.map((student, index) => ({
+      id: student.id,
+      name: student.full_name,
+      status: index === 0 ? 'action-required' : index === 1 ? 'informational' : 'safe',
+      battery: index === 0 ? 14 : index === 1 ? 25 : 85,
+      location: index === 0 ? 'Unknown' : index === 1 ? 'Schoolyard' : 'Classroom 3A',
+      locationStatus: index === 0 ? 'unknown' : index === 1 ? 'warning' : 'ok',
+      healthStatus: index === 0 ? 'warning' : index === 1 ? 'ok' : 'ok',
+      activityStatus: index === 0 ? 'unknown' : index === 1 ? 'warning' : 'ok',
+      lastSeen: formatLastUpdate(index === 0 ? 1 : index === 1 ? 5 : 0),
+      alert:
+        index === 0
+          ? 'Last Seen At Gate 3, 1m Ago'
+          : index === 1
+          ? 'Seems To Be Playing, Not In Class'
+          : undefined,
+    })) || []
 
   // Determine overall status
   const overallStatus: 'safe' | 'informational' | 'action-required' =
