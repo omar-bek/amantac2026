@@ -88,8 +88,12 @@ export default function LiveDashboard() {
   )
 
   const kpis = dashboardData?.kpis || {}
-  const slaCountdowns = dashboardData?.slaCountdowns || []
-  const gradeBreakdown = dashboardData?.gradeBreakdown || []
+  const slaCountdowns = Array.isArray(dashboardData?.slaCountdowns)
+    ? dashboardData!.slaCountdowns
+    : []
+  const gradeBreakdown = Array.isArray(dashboardData?.gradeBreakdown)
+    ? dashboardData!.gradeBreakdown
+    : []
 
   if (isLoading) {
     return (

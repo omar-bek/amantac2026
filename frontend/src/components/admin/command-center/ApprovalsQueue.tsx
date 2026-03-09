@@ -141,7 +141,9 @@ export default function ApprovalsQueue() {
     expired: { label: 'منتهي الصلاحية', color: 'error' },
   }
 
-  const filteredApprovals = (approvals || []).filter((approval: any) => {
+  const approvalsList = Array.isArray(approvals) ? approvals : []
+
+  const filteredApprovals = approvalsList.filter((approval: any) => {
     if (selectedStatus !== 'all' && approval.status !== selectedStatus) return false
     if (selectedType !== 'all' && approval.type !== selectedType) return false
     if (

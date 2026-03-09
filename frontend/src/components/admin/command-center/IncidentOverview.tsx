@@ -109,7 +109,9 @@ export default function IncidentOverview() {
     closed: { label: 'مغلق', color: 'safe' },
   }
 
-  const filteredIncidents = (incidents || []).filter((incident: any) => {
+  const incidentsList = Array.isArray(incidents) ? incidents : []
+
+  const filteredIncidents = incidentsList.filter((incident: any) => {
     if (selectedStatus !== 'all' && incident.status !== selectedStatus) return false
     if (selectedSeverity !== 'all' && incident.severity !== selectedSeverity) return false
     if (
@@ -190,10 +192,10 @@ export default function IncidentOverview() {
                     <div className="flex items-center gap-2 mb-2">
                       <AlertTriangle
                         className={`w-5 h-5 ${incident.severity === 'critical'
-                            ? 'text-red-600'
-                            : incident.severity === 'high'
-                              ? 'text-amber-600'
-                              : 'text-gray-600'
+                          ? 'text-red-600'
+                          : incident.severity === 'high'
+                            ? 'text-amber-600'
+                            : 'text-gray-600'
                           }`}
                       />
                       <h3 className="text-lg font-bold text-gray-900">{incident.title}</h3>
@@ -253,7 +255,7 @@ export default function IncidentOverview() {
                         <span className="text-xs font-medium text-gray-700">سجل التدقيق</span>
                       </div>
                       <div className="space-y-1">
-                        {(incident.auditTrail || []).map((entry: any, idx: number) => (
+                        {incident.auditTrail.map((entry: any, idx: number) => (
                           <div
                             key={idx}
                             className="text-xs text-gray-600 flex items-center gap-2"

@@ -127,7 +127,9 @@ export default function ReportsExports() {
   }
 
   const summary = reports?.summary || {}
-  const recentReports = reports?.recentReports || []
+  const recentReports = Array.isArray(reports?.recentReports)
+    ? reports!.recentReports
+    : []
 
   return (
     <div className="space-y-6">
