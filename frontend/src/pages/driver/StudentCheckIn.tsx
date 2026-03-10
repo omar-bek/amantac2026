@@ -103,9 +103,10 @@ export default function StudentCheckIn() {
     checkInMutation.mutate({ studentId, checkType })
   }
 
-  const pendingStudents = students?.filter((s: Student) => !s.check_in) || []
-  const checkedInStudents = students?.filter((s: Student) => s.check_in && !s.check_out) || []
-  const completedStudents = students?.filter((s: Student) => s.check_in && s.check_out) || []
+  const studentsArray = Array.isArray(students) ? students : []
+  const pendingStudents = studentsArray.filter((s: Student) => !s.check_in) || []
+  const checkedInStudents = studentsArray.filter((s: Student) => s.check_in && !s.check_out) || []
+  const completedStudents = studentsArray.filter((s: Student) => s.check_in && s.check_out) || []
 
   return (
     <div className="min-h-screen bg-sand-50">

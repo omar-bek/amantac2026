@@ -45,10 +45,11 @@ export default function RequestsApprovals() {
     },
   ]
 
+  const requestsArray = Array.isArray(requests) ? requests : []
   const filteredRequests =
     activeTab === 'all'
-      ? requests
-      : requests.filter((r) => r.status === activeTab)
+      ? requestsArray
+      : requestsArray.filter((r) => r.status === activeTab)
 
   const handleApprove = (id: string) => {
     // Implement approve logic

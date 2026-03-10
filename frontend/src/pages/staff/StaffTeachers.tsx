@@ -59,7 +59,8 @@ export default function StaffTeachers() {
     }
   )
 
-  const filteredTeachers = teachers?.filter((teacher: any) =>
+  const teachersArray = Array.isArray(teachers) ? teachers : []
+  const filteredTeachers = teachersArray.filter((teacher: any) =>
     teacher.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     teacher.email.toLowerCase().includes(searchTerm.toLowerCase())
   )

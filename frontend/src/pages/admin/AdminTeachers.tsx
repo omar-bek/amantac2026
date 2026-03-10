@@ -139,14 +139,15 @@ export default function AdminTeachers() {
     createMutation.mutate(formData)
   }
 
-  const filteredTeachers = teachers?.filter((teacher: any) =>
+  const teachersArray = Array.isArray(teachers) ? teachers : []
+  const filteredTeachers = teachersArray.filter((teacher: any) =>
     teacher.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     teacher.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     teacher.phone?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const totalTeachers = teachers?.length || 0
-  const activeTeachers = teachers?.filter((t: any) => t.is_active).length || 0
+  const totalTeachers = teachersArray.length || 0
+  const activeTeachers = teachersArray.filter((t: any) => t.is_active).length || 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">

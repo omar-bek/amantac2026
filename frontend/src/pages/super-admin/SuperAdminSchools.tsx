@@ -21,7 +21,8 @@ export default function SuperAdminSchools() {
     }
   )
 
-  const filteredSchools = schools?.filter((school: any) =>
+  const schoolsArray = Array.isArray(schools) ? schools : []
+  const filteredSchools = schoolsArray.filter((school: any) =>
     school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     school.location?.toLowerCase().includes(searchTerm.toLowerCase())
   )

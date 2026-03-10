@@ -25,7 +25,8 @@ export default function AdminClasses() {
   // Get unique grades
   const grades = classes ? [...new Set(classes.map((c: any) => c.grade).filter(Boolean))] : []
 
-  const filteredClasses = classes?.filter(
+  const classesArray = Array.isArray(classes) ? classes : []
+  const filteredClasses = classesArray.filter(
     (cls: any) => {
       const matchesSearch = 
         cls.class_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,9 +39,9 @@ export default function AdminClasses() {
     }
   )
 
-  const totalClasses = classes?.length || 0
-  const totalStudents = classes?.reduce((sum: number, cls: any) => sum + (cls.student_count || 0), 0) || 0
-  const classesWithTeachers = classes?.filter((c: any) => c.teacher_name).length || 0
+  const totalClasses = classesArray.length || 0
+  const totalStudents = classesArray.reduce((sum: number, cls: any) => sum + (cls.student_count || 0), 0) || 0
+  const classesWithTeachers = classesArray.filter((c: any) => c.teacher_name).length || 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">

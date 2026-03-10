@@ -12,7 +12,8 @@ export default function StaffStudents() {
     retry: false
   })
 
-  const filteredStudents = students?.filter((student: any) =>
+  const studentsArray = Array.isArray(students) ? students : []
+  const filteredStudents = studentsArray.filter((student: any) =>
     student.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.student_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.grade?.toLowerCase().includes(searchTerm.toLowerCase()) ||

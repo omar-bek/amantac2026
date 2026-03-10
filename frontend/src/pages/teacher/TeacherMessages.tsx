@@ -75,11 +75,14 @@ export default function TeacherMessages() {
     }
   )
 
-  const filteredStudents = students?.filter((student) =>
+  const studentsArray = Array.isArray(students) ? students : []
+  const messagesArray = Array.isArray(messages) ? messages : []
+
+  const filteredStudents = studentsArray.filter((student) =>
     student.full_name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const studentMessages = messages?.filter((msg: Message) =>
+  const studentMessages = messagesArray.filter((msg: Message) =>
     selectedStudentId ? msg.student_id === selectedStudentId : true
   )
 
@@ -126,8 +129,8 @@ export default function TeacherMessages() {
                 />
               </div>
               <div className="space-y-2 max-h-[600px] overflow-y-auto">
-                {filteredStudents?.map((student) => {
-                  const unreadCount = messages?.filter(
+                {filteredStudents.map((student) => {
+                  const unreadCount = messagesArray.filter(
                     (msg: Message) => msg.student_id === student.id && !msg.is_read && msg.sender_role === 'parent'
                   ).length || 0
                   

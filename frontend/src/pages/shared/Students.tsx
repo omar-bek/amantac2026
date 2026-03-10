@@ -12,8 +12,9 @@ export default function Students() {
   const [selectedGrade, setSelectedGrade] = useState<string>('')
   const { data: students, isLoading } = useQuery('students', studentsAPI.getAll)
   
+  const studentsArray = Array.isArray(students) ? students : []
   // Get unique grades
-  const grades = students ? [...new Set(students.map((s: any) => s.grade).filter(Boolean))] : []
+  const grades = studentsArray.length > 0 ? [...new Set(studentsArray.map((s: any) => s.grade).filter(Boolean))] : []
   
   const handleViewStudent = (studentId: number) => {
     if (user?.role === 'teacher') {
@@ -24,7 +25,7 @@ export default function Students() {
     }
   }
 
-  const filteredStudents = students?.filter(
+  const filteredStudents = studentsArray.filter(
     (student: any) => {
       const matchesSearch = 
         student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -37,8 +38,8 @@ export default function Students() {
     }
   )
 
-  const totalStudents = students?.length || 0
-  const activeStudents = students?.filter((s: any) => s.is_active).length || 0
+  const totalStudents = studentsArray.length || 0
+  const activeStudents = studentsArray.filter((s: any) => s.is_active).length || 0
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">

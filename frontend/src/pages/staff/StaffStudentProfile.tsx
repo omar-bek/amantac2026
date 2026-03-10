@@ -92,8 +92,9 @@ export default function StaffStudentProfile() {
   })) || []
 
   // Calculate statistics
-  const totalDays = attendanceHistory?.length || 0
-  const presentDays = attendanceHistory?.filter((a: any) => a.status === 'present').length || 0
+  const attendanceHistoryArray = Array.isArray(attendanceHistory) ? attendanceHistory : []
+  const totalDays = attendanceHistoryArray.length || 0
+  const presentDays = attendanceHistoryArray.filter((a: any) => a.status === 'present').length || 0
   const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0
 
   const handleExport = async (format: 'pdf' | 'excel') => {
