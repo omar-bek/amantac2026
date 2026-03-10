@@ -18,7 +18,8 @@ export default function TeacherAssignments() {
     }
   )
 
-  const assignments = Array.isArray(assignmentsResponse?.data) ? assignmentsResponse.data : []
+  const assignmentsData = assignmentsResponse?.data
+  const assignments = Array.isArray(assignmentsData) ? assignmentsData : []
 
   const { data: submissionsResponse } = useQuery(
     ['assignment-submissions', selectedAssignment?.id],
@@ -29,7 +30,8 @@ export default function TeacherAssignments() {
     { enabled: !!selectedAssignment }
   )
 
-  const submissions = Array.isArray(submissionsResponse?.data) ? submissionsResponse.data : []
+  const submissionsData = submissionsResponse?.data
+  const submissions = Array.isArray(submissionsData) ? submissionsData : []
 
   const deleteMutation = useMutation(assignmentsAPI.delete, {
     onSuccess: () => {

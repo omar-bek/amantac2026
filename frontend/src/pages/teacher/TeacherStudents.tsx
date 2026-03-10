@@ -16,7 +16,19 @@ export default function TeacherStudents() {
       try {
         const params = selectedClass ? { class_name: selectedClass } : {}
         const response = await apiClient.get('/teacher/students/', { params })
-        return response.data || []
+        const data = response.data
+
+        // Normalize to a plain array in all cases
+        if (Array.isArray(data)) {
+          return data
+        }
+        if (data && Array.isArray(data.items)) {
+          return data.items
+        }
+        if (data && Array.isArray(data.results)) {
+          return data.results
+        }
+        return []
       } catch (error) {
         console.error('Error fetching students:', error)
         // Fallback to general students API
@@ -37,12 +49,16 @@ export default function TeacherStudents() {
     }
   )
 
-  const filteredStudents = students?.filter(
-    (student: any) =>
-      student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.student_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.class_name?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const studentsArray = Array.isArray(students) ? students : []
+
+  const filteredStudents = studentsArray.filter((student: any) => {
+    const name = (student.full_name || '').toString().toLowerCase()
+    const studentId = (student.student_id || '').toString().toLowerCase()
+    const className = (student.class_name || '').toString().toLowerCase()
+    const term = searchTerm.toLowerCase()
+
+    return name.includes(term) || studentId.includes(term) || className.includes(term)
+  })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -182,7 +198,7 @@ export default function TeacherStudents() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">إجمالي الطلاب</p>
-                <p className="text-3xl font-bold text-gray-900">{students?.length || 0}</p>
+                <p className="text-3xl font-bold text-gray-900">{studentsArray.length}</p>
               </div>
               <Users className="text-primary-600" size={32} />
             </div>
@@ -192,7 +208,7 @@ export default function TeacherStudents() {
               <div>
                 <p className="text-sm text-gray-600">الطلاب النشطون</p>
                 <p className="text-3xl font-bold text-green-600">
-                  {students?.filter((s: any) => s.is_active).length || 0}
+                  {studentsArray.filter((s: any) => s.is_active).length}
                 </p>
               </div>
               <User className="text-green-600" size={32} />
