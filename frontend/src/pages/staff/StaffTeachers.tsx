@@ -398,8 +398,10 @@ export default function StaffTeachers() {
                 <h3 className="text-lg font-bold text-gray-900">الصفوف والطلاب المخصصين</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {teacherClasses && teacherClasses.length > 0 ? (
-                  teacherClasses.map((classItem: any) => (
+                {(() => {
+                  const teacherClassesArray = Array.isArray(teacherClasses) ? teacherClasses : []
+                  return teacherClassesArray.length > 0 ? (
+                    teacherClassesArray.map((classItem: any) => (
                     <div key={classItem.id} className="p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary-300 transition-colors">
                       <div className="flex items-center justify-between mb-3">
                         <h4 className="font-bold text-gray-900 text-lg">{classItem.class_name}</h4>
@@ -425,13 +427,14 @@ export default function StaffTeachers() {
                         </div>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="col-span-2 text-center py-8 bg-gray-50 rounded-xl border border-gray-200">
-                    <Users className="mx-auto text-gray-300 mb-3" size={40} />
-                    <p className="text-gray-500">لا توجد صفوف مخصصة</p>
-                  </div>
-                )}
+                    ))
+                  ) : (
+                    <div className="col-span-2 text-center py-8 bg-gray-50 rounded-xl border border-gray-200">
+                      <Users className="mx-auto text-gray-300 mb-3" size={40} />
+                      <p className="text-gray-500">لا توجد صفوف مخصصة</p>
+                    </div>
+                  )
+                })()}
               </div>
             </div>
 

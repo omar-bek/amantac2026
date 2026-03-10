@@ -64,7 +64,7 @@ export default function SuperAdminSchools() {
 
         {/* Schools Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredSchools?.map((school: any) => (
+          {filteredSchools.map((school: any) => (
             <div
               key={school.id}
               className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"

@@ -22,10 +22,10 @@ export default function AdminClasses() {
     }
   )
 
-  // Get unique grades
-  const grades = classes ? [...new Set(classes.map((c: any) => c.grade).filter(Boolean))] : []
-
   const classesArray = Array.isArray(classes) ? classes : []
+  // Get unique grades
+  const grades = classesArray.length > 0 ? [...new Set(classesArray.map((c: any) => c.grade).filter(Boolean))] : []
+
   const filteredClasses = classesArray.filter(
     (cls: any) => {
       const matchesSearch = 

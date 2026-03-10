@@ -194,7 +194,7 @@ export default function TeacherMessages() {
 
                 {/* Messages List */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {studentMessages?.map((message: Message) => (
+                  {studentMessages.map((message: Message) => (
                     <div
                       key={message.id}
                       className={`flex ${message.sender_role === 'teacher' ? 'justify-end' : 'justify-start'}`}

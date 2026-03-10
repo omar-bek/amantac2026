@@ -84,15 +84,15 @@ export default function StaffStudentProfile() {
   )
 
   // Prepare attendance chart data (last 30 days)
-  const attendanceChartData = attendanceHistory?.slice(0, 30).reverse().map((att: any) => ({
+  const attendanceHistoryArray = Array.isArray(attendanceHistory) ? attendanceHistory : []
+  const attendanceChartData = attendanceHistoryArray.slice(0, 30).reverse().map((att: any) => ({
     date: format(parseISO(att.date), 'yyyy-MM-dd'),
     present: att.status === 'present' ? 1 : 0,
     absent: att.status === 'absent' ? 1 : 0,
     late: att.status === 'late' ? 1 : 0
-  })) || []
+  }))
 
   // Calculate statistics
-  const attendanceHistoryArray = Array.isArray(attendanceHistory) ? attendanceHistory : []
   const totalDays = attendanceHistoryArray.length || 0
   const presentDays = attendanceHistoryArray.filter((a: any) => a.status === 'present').length || 0
   const attendanceRate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0
@@ -283,8 +283,8 @@ export default function StaffStudentProfile() {
               <h2 className="text-xl font-bold text-gray-900">سجل الحضور</h2>
             </div>
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {attendanceHistory && attendanceHistory.length > 0 ? (
-                attendanceHistory.slice(0, 20).map((att: any, index: number) => (
+              {attendanceHistoryArray && attendanceHistoryArray.length > 0 ? (
+                attendanceHistoryArray.slice(0, 20).map((att: any, index: number) => (
                   <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       att.status === 'present' ? 'bg-green-100' : 
@@ -325,8 +325,10 @@ export default function StaffStudentProfile() {
               <h2 className="text-xl font-bold text-gray-900">ملخص السلوك</h2>
             </div>
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {behaviorLogs && behaviorLogs.length > 0 ? (
-                behaviorLogs.slice(0, 10).map((log: any, index: number) => (
+              {(() => {
+                const behaviorLogsArray = Array.isArray(behaviorLogs) ? behaviorLogs : []
+                return behaviorLogsArray.length > 0 ? (
+                  behaviorLogsArray.slice(0, 10).map((log: any, index: number) => (
                   <div key={index} className="p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-start justify-between mb-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -350,12 +352,13 @@ export default function StaffStudentProfile() {
                     )}
                   </div>
                 ))
-              ) : (
-                <div className="text-center py-8">
-                  <Shield className="mx-auto text-gray-300 mb-3" size={40} />
-                  <p className="text-gray-500">لا توجد سجلات سلوك</p>
-                </div>
-              )}
+                ) : (
+                  <div className="text-center py-8">
+                    <Shield className="mx-auto text-gray-300 mb-3" size={40} />
+                    <p className="text-gray-500">لا توجد سجلات سلوك</p>
+                  </div>
+                )
+              })()}
             </div>
           </div>
         </div>
@@ -397,8 +400,10 @@ export default function StaffStudentProfile() {
               <h2 className="text-xl font-bold text-gray-900">طلبات الاستلام الأخيرة</h2>
             </div>
             <div className="space-y-3 max-h-64 overflow-y-auto">
-              {pickupRequests && pickupRequests.length > 0 ? (
-                pickupRequests.slice(0, 5).map((req: any, index: number) => (
+              {(() => {
+                const pickupRequestsArray = Array.isArray(pickupRequests) ? pickupRequests : []
+                return pickupRequestsArray.length > 0 ? (
+                  pickupRequestsArray.slice(0, 5).map((req: any, index: number) => (
                   <div key={index} className="p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -417,35 +422,38 @@ export default function StaffStudentProfile() {
                     <p className="text-xs text-gray-600">{req.recipient_relation}</p>
                   </div>
                 ))
-              ) : (
-                <div className="text-center py-8">
-                  <CheckCircle className="mx-auto text-gray-300 mb-3" size={40} />
-                  <p className="text-gray-500">لا توجد طلبات استلام</p>
-                </div>
-              )}
+                ) : (
+                  <div className="text-center py-8">
+                    <CheckCircle className="mx-auto text-gray-300 mb-3" size={40} />
+                    <p className="text-gray-500">لا توجد طلبات استلام</p>
+                  </div>
+                )
+              })()}
             </div>
           </div>
         </div>
 
         {/* Academic Summary */}
-        {grades && grades.length > 0 && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-200 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <Award className="text-primary-600" size={24} />
-              <h2 className="text-xl font-bold text-gray-900">ملخص الأكاديمي</h2>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-right">
-                <thead>
-                  <tr className="bg-gray-100 border-b border-gray-200">
-                    <th className="py-3 px-4 text-sm font-bold text-gray-700">المادة</th>
-                    <th className="py-3 px-4 text-sm font-bold text-gray-700">الدرجة</th>
-                    <th className="py-3 px-4 text-sm font-bold text-gray-700">الفصل</th>
-                    <th className="py-3 px-4 text-sm font-bold text-gray-700">التاريخ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {grades.slice(0, 10).map((grade: any, index: number) => (
+        {(() => {
+          const gradesArray = Array.isArray(grades) ? grades : []
+          return gradesArray.length > 0 && (
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border-2 border-gray-200 shadow-lg">
+              <div className="flex items-center gap-3 mb-6">
+                <Award className="text-primary-600" size={24} />
+                <h2 className="text-xl font-bold text-gray-900">ملخص الأكاديمي</h2>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-right">
+                  <thead>
+                    <tr className="bg-gray-100 border-b border-gray-200">
+                      <th className="py-3 px-4 text-sm font-bold text-gray-700">المادة</th>
+                      <th className="py-3 px-4 text-sm font-bold text-gray-700">الدرجة</th>
+                      <th className="py-3 px-4 text-sm font-bold text-gray-700">الفصل</th>
+                      <th className="py-3 px-4 text-sm font-bold text-gray-700">التاريخ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gradesArray.slice(0, 10).map((grade: any, index: number) => (
                     <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="py-3 px-4 text-sm text-gray-900">{grade.subject}</td>
                       <td className="py-3 px-4 text-sm font-bold text-gray-900">{grade.score}</td>
@@ -459,7 +467,8 @@ export default function StaffStudentProfile() {
               </table>
             </div>
           </div>
-        )}
+          )
+        })()}
       </div>
     </div>
   )
